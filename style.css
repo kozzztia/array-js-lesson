@@ -1,9 +1,96 @@
-*{
+* {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
 }
 
-body{
+body {
     background: #c3f6db;
+    
+}
+
+section {
+    background: #757575;
+    width: 500px;
+    min-height: 500px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 50px #000;
+    
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    
+    form {
+        width: 100%;
+        display: flex;
+        gap: 10px;
+        button{
+            font-size: 30px;
+
+        }
+    }
+    
+    input {
+        width: 100%;
+        border-radius: 10px;
+        border: none;
+        outline: none;
+        padding: 10px;
+    }
+    
+    button {
+        width: 42px;
+        height: 42px;
+        border: none;
+        outline: none;
+        border-radius: 10px;
+        cursor: pointer;
+        box-shadow: 0 0 5px #000;
+    }
+    button[attr = "del"]{
+        background: red;
+    }
+    button[attr = "done"]{
+        background: green;
+    }
+    button[attr = "edit"]{
+        background: yellow;
+    }
+    
+    ul {
+        background: #fff;
+        flex: 1;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 5px;
+        gap: 5px;
+    }
+    
+    li {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+    
+    p {
+        min-width : 300px;
+        height: 42px;
+        background: #c3f6db;
+        margin-right: auto;
+        padding : 5px;
+        text-align: center;
+        border-radius: 10px;
+        box-shadow: 0 0 5px #000;
+        font-size: 25px;
+    }
 }
