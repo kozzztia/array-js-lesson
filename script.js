@@ -1,5 +1,3 @@
-const mokProducts = ["bred+20", "melon-100", "candy/30"]
-
 
 // 1 Мінімум
 
@@ -15,11 +13,8 @@ const mokProducts = ["bred+20", "melon-100", "candy/30"]
 // Додавання покупки в список. Враховуй, що при додаванні покупки з уже існуючим в списку продуктом, необхідно збільшувати кількість в існуючій покупці, а не додавати нову. При цьому також повинна змінитися сума, наприклад, якщо ціна за одиницю 12, а кількості товарів стало 2, то сума буде 24.
 
 const form = document.querySelector('form');
-const list = document.querySelector('ul');
+let list = document.querySelector('ul');
 const counter = document.querySelector('span');
-
-let shoppingList = [];
-let sum = 0;
 
 form.onsubmit = (e) => formHandler(e);
 
@@ -31,16 +26,29 @@ class Product {
         this.isBought = true;
         this.pricePerUnit = +price;
         this.totalPrice = this.quantity * this.pricePerUnit;
-    }
+    };
 
     addQuantity() {
         this.quantity++;
-        this.totalPrice = this.quantity * this.pricePerUnit;
-    }
+    };
+    markAsDone(){
+        this.isBought = !this.isBought;
+    };
+    returnHtml() {
+        return `
+        <li id="product-${this.id}">
+            <p>${this.product}</p>
+            <button onclick="editProduct(${this.id})">edit</button>
+            <button onclick="deleteProduct(${this.id})">del</button>
+            <button onclick="toggleDone(${this.id})">${this.isBought ? "Bought" : "Not Bought"}</button>
+        </li>
+        `;
+        
+    };
 }
 
 function createProduct(value) {
-    let newProduct = '';
+    let newProduct;
     let newPrice = 0;
     if (value.trim() !== "") {
         value.split(/[ ,+-/]/).forEach(item => !+item ? newProduct = item : newPrice = item);
@@ -48,47 +56,35 @@ function createProduct(value) {
     return new Product(newProduct, newPrice)
 }
 
-
-
-// mokProducts.map(item => shoppingList.push(createProduct(item)));
-
-function createProductList() {
-    list.innerHTML = "";
-    sum = 0;
-    shoppingList.forEach(item => {
-        sum += item.totalPrice;
-        list.innerHTML += `
-        <li>
-            <p>${item.product}</p>
-            <button attr="edit">edit</button>
-            <button attr="del">del</button>
-            <button attr="done" attr-id="${item.id}">done</button>
-        </li>
-        `;
-    });
-    counter.innerHTML = sum;
-}
-
-// createProductList()
-
+let productList = [];
 
 function formHandler(e) {
-    e.preventDefault()
+    e.preventDefault();
+
     let value = document.querySelector('input').value;
     if (value.trim() !== "") {
-        let product;
-        let price;
-        value.split(/[ ,+-/]/).filter(item => !+item ? product = item : price = item);
-        shoppingList.push(new Product(product, price),
-        )
+        list.innerText = "";
+        productList.push(createProduct(value));
+        renderList();
     }
-    console.log(shoppingList);
     form.querySelector('input').value = "";
-    createProductList()
 }
 
-function checkDoneProduct(id) {
-    shoppingList.map(item => item.id === +id ? item.isBought = !item.isBought: item);
-    console.log(shoppingList)
-    createProductList()
+function renderList() {
+    list.innerHTML = "";
+    productList.forEach(item => {
+        list.innerHTML += item.returnHtml();
+    });
+}
+
+function toggleDone(id) {
+    const product = productList.find(item => item.id === id);
+    if (product) {
+        product.markAsDone();
+        renderList(); 
+    }
+}
+function deleteProduct(id) {
+    productList = productList.filter(item => item.id !== id);
+    renderList(); 
 }
