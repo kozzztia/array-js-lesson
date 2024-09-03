@@ -1,4 +1,5 @@
-console.log('go');
+const mokProducts = ["bred+20", "melon-100", "candy/30"]
+
 
 // 1 Мінімум
 
@@ -13,45 +14,54 @@ console.log('go');
 // Видалення продукту зі списку (видалення повинно проводитися шляхом створення нового масиву, в якому продукт, що ми шукаємо, буде відсутнім)
 // Додавання покупки в список. Враховуй, що при додаванні покупки з уже існуючим в списку продуктом, необхідно збільшувати кількість в існуючій покупці, а не додавати нову. При цьому також повинна змінитися сума, наприклад, якщо ціна за одиницю 12, а кількості товарів стало 2, то сума буде 24.
 
-const shoppingList = [
-    {
-        name: "Milk",       // Назва продукту
-        quantity: 2,        // Кількість
-        isBought: false,    // Куплений чи ні
-        pricePerUnit: 20,   // Ціна за одиницю товару
-        totalPrice: 2 * 20  // Сума (кількість * ціна за одиницю)
-    },
-    {
-        name: "Bread",
-        quantity: 1,
-        isBought: true,
-        pricePerUnit: 15,
-        totalPrice: 1 * 15
-    },
-    {
-        name: "Eggs",
-        quantity: 12,
-        isBought: false,
-        pricePerUnit: 3,
-        totalPrice: 12 * 3
-    },
-    {
-        name: "Butter",
-        quantity: 1,
-        isBought: true,
-        pricePerUnit: 30,
-        totalPrice: 1 * 30
-    }
-];
-
-
 const form = document.querySelector('form');
 const list = document.querySelector('ul');
 
-form.addEventListener('submit', (e)=>formHandler(e))
+form.onsubmit = (e)=>formHandler(e);
+
+class Product {
+    constructor(product, price) {
+        this.id = Date.now();            
+        this.product = product;          
+        this.quantity = 1;               
+        this.isBought = true;            
+        this.pricePerUnit = +price;      
+        this.totalPrice = this.quantity * this.pricePerUnit; 
+    }
+
+    addQuantity() {
+        this.quantity++;
+        this.totalPrice = this.quantity * this.pricePerUnit;  
+    }
+}
+
+function cretateProduct(value){
+    let newProduct = '';
+    let newPrice = 0;
+    if (value.trim() !== "") {
+        value.split(/[ ,+-/]/).forEach(item=> !+item? newProduct = item : newPrice = item);
+    }
+    return new Product(newProduct ,newPrice)
+}
+
+let shoppingList = []
+
+mokProducts.map(item => shoppingList.push(cretateProduct(item)));
+
+console.log(shoppingList)
+
+
 
 function formHandler(e){
     e.preventDefault()
-    const name = document.querySelector('input').value;
-    console.log(name)
+    let value = document.querySelector('input').value;
+    if (value.trim() !== "") {
+        let product;
+        let price;
+        value.split(/[ ,+-/]/).filter(item=> !+item?product = item: price = item);
+        shoppingList.push(new Product(product, price),
+        )
+    }
+    console.log(shoppingList);
+    form.querySelector('input').value = "";
 }
