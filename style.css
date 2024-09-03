@@ -98,17 +98,45 @@ section {
         align-items: center;
         justify-content: center;
         gap: 5px;
+        position: relative;
+        
+        p, input {
+            flex: 1;
+            height: 42px;
+            background: #c3f6db;
+            margin-right: auto;
+            padding: 5px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 0 5px #000;
+            font-size: 25px;
+            position: relative;
+            overflow: hidden;
+            transition: all 1s ease; /* Додаємо плавний перехід для всіх змін */
+        }
+        
+        p::after {
+            position: absolute;
+            content: "";
+            display: block;
+            width: 100%;
+            height: 1px;
+            background: #000;
+            top: 50%;
+            right: 350px;
+            transition: all 0.5s ease; /* Плавний перехід для псевдоелемента */
+        }
+    
+        .done {
+            opacity: 0.4;
+            position: relative;
+            transition: opacity 1s ease; /* Плавний перехід для зміни прозорості */
+        }
+    
+        .done::after {
+            right: 0;
+        }
     }
     
-    p {
-        flex: 1;
-        height: 42px;
-        background: #c3f6db;
-        margin-right: auto;
-        padding : 5px;
-        text-align: center;
-        border-radius: 10px;
-        box-shadow: 0 0 5px #000;
-        font-size: 25px;
-    }
+
 }

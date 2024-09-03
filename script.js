@@ -31,6 +31,7 @@ class Product {
 
     addQuantity() {
         this.quantity++;
+        this.totalPrice = this.quantity * this.pricePerUnit;
     };
     markAsDone() {
         this.isBought = !this.isBought;
@@ -38,20 +39,25 @@ class Product {
     markAsEdit() {
         this.isEdit = !this.isEdit;
     };
+    editProduct(value) {
+        this.product = value;
+    };
     returnHtml() {
-        return !this.isEdit?
-        `
+        return !this.isEdit ?
+            `
         <li id="product-${this.id}">
-            <p>${this.product}</p>
-            <button onclick="editProduct(${this.id})">edit</button>
+            <p class = "${this.isBought?'done':'no'}">${this.product}: <span>${this.quantity} - ${this.pricePerUnit}</span></p>
+            <button onclick="openEditProduct(${this.id})">edit</button>
             <button onclick="deleteProduct(${this.id})">del</button>
             <button onclick="toggleDone(${this.id})">${this.isBought ? "Bought" : "Not Bought"}</button>
         </li>
         `:
-        `
+            `
         <li id="product-${this.id}">
-            <input type="text" name="edit"/>
+            <input type="text" name="edit" value="${this.product}" />
             <button onclick="editProduct(${this.id})">ok</button>
+            <button onclick="addQuantity(${this.id})">+</button>
+            <button onclick="deleteProduct(${this.id})">del</button>
         </li>
         `
 
@@ -90,14 +96,10 @@ function renderList() {
     });
 }
 
-function editProduct(id){
+function openEditProduct(id) {
     const product = productList.find(item => item.id === id);
     product.markAsEdit();
     renderList();
-
-    const editValue  = document.querySelector(`#product-${id}`);
-    console.log(editValue)
-
 }
 
 function toggleDone(id) {
@@ -107,5 +109,20 @@ function toggleDone(id) {
 }
 function deleteProduct(id) {
     productList = productList.filter(item => item.id !== id);
+    renderList();
+}
+
+function addQuantity(id) {
+    const product = productList.find(item => item.id === id);
+    product.addQuantity();
+    renderList();
+}
+
+function editProduct(id) {
+    const product = productList.find(item => item.id === id);
+    const input = document.querySelector(`input[name = "edit"]`);
+    product.editProduct(input.value);
+    input.value = "";
+    openEditProduct(id);
     renderList();
 }
