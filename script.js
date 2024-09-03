@@ -23,7 +23,8 @@ class Product {
         this.id = Date.now();
         this.product = product;
         this.quantity = 1;
-        this.isBought = true;
+        this.isBought = false;
+        this.isEdit = false;
         this.pricePerUnit = +price;
         this.totalPrice = this.quantity * this.pricePerUnit;
     };
@@ -31,19 +32,29 @@ class Product {
     addQuantity() {
         this.quantity++;
     };
-    markAsDone(){
+    markAsDone() {
         this.isBought = !this.isBought;
     };
+    markAsEdit() {
+        this.isEdit = !this.isEdit;
+    };
     returnHtml() {
-        return `
+        return !this.isEdit?
+        `
         <li id="product-${this.id}">
             <p>${this.product}</p>
             <button onclick="editProduct(${this.id})">edit</button>
             <button onclick="deleteProduct(${this.id})">del</button>
             <button onclick="toggleDone(${this.id})">${this.isBought ? "Bought" : "Not Bought"}</button>
         </li>
-        `;
-        
+        `:
+        `
+        <li id="product-${this.id}">
+            <input type="text" name="edit"/>
+            <button onclick="editProduct(${this.id})">ok</button>
+        </li>
+        `
+
     };
 }
 
@@ -60,31 +71,41 @@ let productList = [];
 
 function formHandler(e) {
     e.preventDefault();
-
-    let value = document.querySelector('input').value;
+    let value = document.querySelector('input[name = "product"]').value;
     if (value.trim() !== "") {
-        list.innerText = "";
         productList.push(createProduct(value));
         renderList();
     }
-    form.querySelector('input').value = "";
+    form.querySelector('input[name = "product"]').value = "";
 }
+
+
 
 function renderList() {
     list.innerHTML = "";
+    counter.innerHTML = ""
     productList.forEach(item => {
         list.innerHTML += item.returnHtml();
+        counter.innerHTML = +counter.innerHTML + +item.totalPrice;
     });
+}
+
+function editProduct(id){
+    const product = productList.find(item => item.id === id);
+    product.markAsEdit();
+    renderList();
+
+    const editValue  = document.querySelector(`#product-${id}`);
+    console.log(editValue)
+
 }
 
 function toggleDone(id) {
     const product = productList.find(item => item.id === id);
-    if (product) {
-        product.markAsDone();
-        renderList(); 
-    }
+    product.markAsDone();
+    renderList();
 }
 function deleteProduct(id) {
     productList = productList.filter(item => item.id !== id);
-    renderList(); 
+    renderList();
 }
