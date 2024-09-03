@@ -24,6 +24,16 @@ section {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    h1{
+        display: inline-block;
+        color : #c3f6db;
+        span::after{
+            margin-left: 5px;
+            content: "$";
+            font-size: inherit;
+        }
+
+    }
     
     form {
         width: 100%;

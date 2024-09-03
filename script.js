@@ -16,52 +16,79 @@ const mokProducts = ["bred+20", "melon-100", "candy/30"]
 
 const form = document.querySelector('form');
 const list = document.querySelector('ul');
+const counter = document.querySelector('span');
 
-form.onsubmit = (e)=>formHandler(e);
+let shoppingList = [];
+let sum = 0;
+
+form.onsubmit = (e) => formHandler(e);
 
 class Product {
     constructor(product, price) {
-        this.id = Date.now();            
-        this.product = product;          
-        this.quantity = 1;               
-        this.isBought = true;            
-        this.pricePerUnit = +price;      
-        this.totalPrice = this.quantity * this.pricePerUnit; 
+        this.id = Date.now();
+        this.product = product;
+        this.quantity = 1;
+        this.isBought = true;
+        this.pricePerUnit = +price;
+        this.totalPrice = this.quantity * this.pricePerUnit;
     }
 
     addQuantity() {
         this.quantity++;
-        this.totalPrice = this.quantity * this.pricePerUnit;  
+        this.totalPrice = this.quantity * this.pricePerUnit;
     }
 }
 
-function cretateProduct(value){
+function createProduct(value) {
     let newProduct = '';
     let newPrice = 0;
     if (value.trim() !== "") {
-        value.split(/[ ,+-/]/).forEach(item=> !+item? newProduct = item : newPrice = item);
+        value.split(/[ ,+-/]/).forEach(item => !+item ? newProduct = item : newPrice = item);
     }
-    return new Product(newProduct ,newPrice)
+    return new Product(newProduct, newPrice)
 }
 
-let shoppingList = []
-
-mokProducts.map(item => shoppingList.push(cretateProduct(item)));
-
-console.log(shoppingList)
 
 
+// mokProducts.map(item => shoppingList.push(createProduct(item)));
 
-function formHandler(e){
+function createProductList() {
+    list.innerHTML = "";
+    sum = 0;
+    shoppingList.forEach(item => {
+        sum += item.totalPrice;
+        list.innerHTML += `
+        <li>
+            <p>${item.product}</p>
+            <button attr="edit">edit</button>
+            <button attr="del">del</button>
+            <button attr="done" attr-id="${item.id}">done</button>
+        </li>
+        `;
+    });
+    counter.innerHTML = sum;
+}
+
+// createProductList()
+
+
+function formHandler(e) {
     e.preventDefault()
     let value = document.querySelector('input').value;
     if (value.trim() !== "") {
         let product;
         let price;
-        value.split(/[ ,+-/]/).filter(item=> !+item?product = item: price = item);
+        value.split(/[ ,+-/]/).filter(item => !+item ? product = item : price = item);
         shoppingList.push(new Product(product, price),
         )
     }
     console.log(shoppingList);
     form.querySelector('input').value = "";
+    createProductList()
+}
+
+function checkDoneProduct(id) {
+    shoppingList.map(item => item.id === +id ? item.isBought = !item.isBought: item);
+    console.log(shoppingList)
+    createProductList()
 }
