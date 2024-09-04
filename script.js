@@ -19,6 +19,7 @@ const counter = document.querySelector('span');
 form.onsubmit = (e) => formHandler(e);
 
 class Product {
+
     constructor(product, price) {
         this.id = Date.now();
         this.product = product;
@@ -27,7 +28,42 @@ class Product {
         this.isEdit = false;
         this.pricePerUnit = +price;
         this.totalPrice = this.quantity * this.pricePerUnit;
+        this.deletBtn = `
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="24px" height="24px">
+            <path id="XMLID_4_" style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10;" d="M21,4H3"/>
+            <path style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10;" 
+                d="M5,4l1.884,16.132C6.95,20.629,7.374,21,7.875,21h8.249c0.501,0,0.925-0.371,0.991-0.868L19,4"/>
+                s<polygon points="15,3 15,4 9,4 9,3 10,2 14,2 "/>
+            </svg>
+        `;
+        this.editBtn = `
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="24px" height="24px">
+            <g>
+                <g>
+                    <polygon points="14.5,5.5 3,17 3,21 7,21 18.5,9.5 "/>
+                    <path d="M21.707,4.879l-2.586-2.586c-0.391-0.391-1.024-0.391-1.414,0L16,4l4,4l1.707-1.707C22.098,5.902,22.098,5.269,21.707,4.879z"/>
+                </g>
+            </g>
+            </svg>
+        `;
+        this.doneBtn = `
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" width="50px" height="50px">
+                <polyline fill="none" stroke="#000000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="8,29.312 21.921,41.348 42,10.652 "/>
+            </svg>
+        `;
+        this.notDoneBtn = `
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" width="50px" height="50px">
+                <line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="7.741" y1="7.741" x2="42.359" y2="42.359"/>
+                <line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="42.258" y1="7.742" x2="7.618" y2="42.382"/>
+            </svg>
+        `;
+        this.incrementBtn =`
+        <svg width="37px" height="37px" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+            <line x1="256" y1="112" x2="256" y2="400" style="fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px"/>
+            <line x1="400" y1="256" x2="112" y2="256" style="fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px"/>
+        </svg> `
     };
+
 
     addQuantity() {
         this.quantity++;
@@ -46,18 +82,18 @@ class Product {
         return !this.isEdit ?
             `
         <li id="product-${this.id}">
-            <p class = "${this.isBought?'done':'no'}">${this.product}: <span>${this.quantity} - ${this.pricePerUnit}</span></p>
-            <button onclick="openEditProduct(${this.id})">edit</button>
-            <button onclick="deleteProduct(${this.id})">del</button>
-            <button onclick="toggleDone(${this.id})">${this.isBought ? "Bought" : "Not Bought"}</button>
+            <p class = "${this.isBought ? 'done' : 'no'}">${this.product}: <span>${this.quantity} - ${this.pricePerUnit}</span></p>
+            <button onclick="openEditProduct(${this.id})">${this.editBtn}</button>
+            <button onclick="deleteProduct(${this.id})">${this.deletBtn}</button>
+            <button onclick="toggleDone(${this.id})">${this.isBought ? `${this.notDoneBtn}` : `${this.doneBtn}`}</button>
         </li>
         `:
             `
         <li id="product-${this.id}">
             <input type="text" name="edit" value="${this.product}" />
-            <button onclick="editProduct(${this.id})">ok</button>
-            <button onclick="addQuantity(${this.id})">+</button>
-            <button onclick="deleteProduct(${this.id})">del</button>
+            <button onclick="editProduct(${this.id})">${this.doneBtn}</button>
+            <button onclick="addQuantity(${this.id})">${this.incrementBtn}</button>
+            <button onclick="deleteProduct(${this.id})">${this.deletBtn}</button>
         </li>
         `
 
@@ -100,6 +136,10 @@ function openEditProduct(id) {
     const product = productList.find(item => item.id === id);
     product.markAsEdit();
     renderList();
+    const input = document.querySelector(`input[name="edit"]`);
+    if (input) {
+        input.focus();
+    }
 }
 
 function toggleDone(id) {
@@ -123,6 +163,7 @@ function editProduct(id) {
     const input = document.querySelector(`input[name = "edit"]`);
     product.editProduct(input.value);
     input.value = "";
+    // close
     openEditProduct(id);
     renderList();
 }
