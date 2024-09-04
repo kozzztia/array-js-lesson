@@ -130,12 +130,19 @@ function renderList() {
     });
 }
 function openEditProduct(id) {
+    productList.forEach(item => {
+        if (item.id !== id) {
+            item.isEdit = false;
+        }
+    });
+
     const product = productList.find(item => item.id === id);
     product.markAsEdit();
     renderList();
+
     const input = document.querySelector(`input[name="edit"]`);
     if (input) {
-        input.focus();
+        input.focus();  // Focus на полі введення під час редагування
     }
 }
 function toggleDone(id) {
