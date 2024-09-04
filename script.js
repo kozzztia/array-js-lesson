@@ -121,8 +121,6 @@ function formHandler(e) {
     form.querySelector('input[name = "product"]').value = "";
 }
 
-
-
 function renderList() {
     list.innerHTML = "";
     counter.innerHTML = ""
@@ -131,7 +129,6 @@ function renderList() {
         counter.innerHTML = +counter.innerHTML + +item.totalPrice;
     });
 }
-
 function openEditProduct(id) {
     const product = productList.find(item => item.id === id);
     product.markAsEdit();
@@ -141,7 +138,6 @@ function openEditProduct(id) {
         input.focus();
     }
 }
-
 function toggleDone(id) {
     const product = productList.find(item => item.id === id);
     product.markAsDone();
@@ -151,13 +147,11 @@ function deleteProduct(id) {
     productList = productList.filter(item => item.id !== id);
     renderList();
 }
-
 function addQuantity(id) {
     const product = productList.find(item => item.id === id);
     product.addQuantity();
     renderList();
 }
-
 function editProduct(id) {
     const product = productList.find(item => item.id === id);
     const input = document.querySelector(`input[name = "edit"]`);
